@@ -1,0 +1,16 @@
+{
+  "mediaFileRoot": "",
+  "jwt" : {
+    "secret": "123456"
+  },
+  "database": {
+    "dialect": "mysql",
+    "host": "",
+    "port": 3306,
+    "username": "",
+    "password": "",
+    "database": "picmaster",
+    "autoLoadModels": true,
+    "synchronize": true
+  }
+}
