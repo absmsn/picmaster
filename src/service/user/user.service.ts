@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './user.model';
 import { Photo } from '../photo/photo.model';
-import CryptoTool from "../../utils/crypto-tool";
+import CryptoTool from '../../utils/crypto-tool';
 import { CreateUserDto } from './dto/create-user.dto';
-import { WhereOptions } from "sequelize";
-import { Album } from "../album/album.model";
+import { WhereOptions } from 'sequelize';
+import { Album } from '../album/album.model';
 
 const hashKey = 'salt';
 
@@ -36,19 +36,42 @@ export class UserService {
     return await user.save();
   }
 
-  async getPhotos(userID, offset, limit, order, desc) {
+  async listPhotos(userID, offset, limit, order, desc) {
     return await Photo.findAll({
-      attributes: ['photoID', 'albumID' ,'photoName' ,'modifiedTime' ,'comment' ,'size'],
+      attributes: [
+        'photoID',
+        'albumID',
+        'photoName',
+        'modifiedTime',
+        'comment',
+        'size',
+      ],
       include: {
         model: Album,
         where: {
-          userID: userID
+          userID: userID,
         },
-        required: false
+        required: false,
       },
       limit: limit,
       offset: offset,
-      order: [[order, desc ? 'desc' : 'asc']]
+      order: [[order ? order : 'modifiedTime', desc ? 'desc' : 'asc']],
+    });
+  }
+
+  async listAlbums(userID, offset, limit, desc) {
+    return await Album.findAll({
+      attributes: ['userID', 'albumID', 'name', 'createTime'],
+      include: {
+        model: User,
+        where: {
+          userID: userID,
+        },
+        required: false,
+      },
+      limit: limit,
+      offset: offset,
+      order: [['name', desc ? 'desc' : 'asc']],
     });
   }
 }

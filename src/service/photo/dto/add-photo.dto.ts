@@ -1,4 +1,4 @@
-import { IsDate } from 'class-validator'
+import { IsDate } from 'class-validator';
 
 export class AddPhotoDto {
   albumID: string;

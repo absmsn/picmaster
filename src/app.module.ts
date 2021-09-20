@@ -15,9 +15,14 @@ import { get } from 'config';
 
 @Module({
   imports: [
-    SequelizeModule.forRoot(Object.assign( {
-      models: [User, Album, Photo, Tag, PhotoTag],
-    }, get('database'))),
+    SequelizeModule.forRoot(
+      Object.assign(
+        {
+          models: [User, Album, Photo, Tag, PhotoTag],
+        },
+        get('database'),
+      ),
+    ),
     UserModule,
     AlbumModule,
     PhotoModule,

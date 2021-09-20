@@ -13,7 +13,7 @@ const secret: string = config.get('jwt.secret');
     JwtModule.register({
       secret: secret,
       signOptions: { expiresIn: '1d' },
-    })
+    }),
   ],
   providers: [AuthService, JwtStrategy],
   exports: [AuthService],

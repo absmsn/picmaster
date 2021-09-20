@@ -1,7 +1,8 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { Album } from './album.model';
-import CryptoTool from "../../utils/crypto-tool";
+import CryptoTool from '../../utils/crypto-tool';
+import { Photo } from '../photo/photo.model';
 
 const hashKey = 'salt';
 
@@ -22,9 +23,34 @@ export class AlbumService {
   }
 
   async remove(albumID: string) {
-    const album = await this.findOne({albumID});
+    const album = await this.findOne({ albumID });
     if (album) {
       await album.destroy();
     }
+  }
+
+  async listPhotos(albumID, offset, limit, order, desc) {
+    return await Photo.findAll({
+      attributes: [
+        'photoID',
+        'albumID',
+        'photoName',
+        'uploadTime',
+        'modifiedTime',
+        'visitCount',
+        'comment',
+        'size',
+      ],
+      where: {
+        albumID: albumID,
+      },
+      // include: {
+      //   model: Album,
+      //   required: false,
+      // },
+      limit: limit,
+      offset: offset,
+      order: [[order, desc ? 'desc' : 'asc']],
+    });
   }
 }

@@ -1,8 +1,15 @@
-import { accessSync, constants, createWriteStream, mkdirSync, createReadStream, ReadStream } from "fs";
+import {
+  accessSync,
+  constants,
+  createWriteStream,
+  mkdirSync,
+  createReadStream,
+  ReadStream,
+} from 'fs';
 import { join } from 'path';
 import { get } from 'config';
-import { writeFile, readFile, rm, access } from "fs/promises";
-import ImageCompress from './image-compress'
+import { writeFile, rm, access } from 'fs/promises';
+import ImageCompress from './image-compress';
 
 export class FSManager {
   static createDirIfNotExist(dirName) {
@@ -16,7 +23,7 @@ export class FSManager {
   }
 
   static async removeDir(dirName, recursive = true) {
-    await rm(dirName, {recursive: recursive});
+    await rm(dirName, { recursive: recursive });
   }
 
   static async removeFile(path) {
@@ -50,7 +57,9 @@ export class StorageManager {
 
   private getThumbnailPath(userID, albumID, photoID, width, height, format) {
     const thumbnailDir = this.getThumbnailDir(userID, albumID);
-    return join(thumbnailDir, [photoID, width, height].join('_')) + '.' + format;
+    return (
+      join(thumbnailDir, [photoID, width, height].join('_')) + '.' + format
+    );
   }
 
   createUserDir(userID: string) {
@@ -81,20 +90,12 @@ export class StorageManager {
     await writeFile(path, buffer);
   }
 
-  readPhoto(
-    userID: string,
-    albumID: string,
-    fileName: string,
-  ):ReadStream {
+  readPhoto(userID: string, albumID: string, fileName: string): ReadStream {
     const path = this.getPhotoPath(userID, albumID, fileName);
     return createReadStream(path);
   }
 
-  async deletePhoto(
-    userID: string,
-    albumID: string,
-    fileName: string,
-  ) {
+  async deletePhoto(userID: string, albumID: string, fileName: string) {
     const path = this.getPhotoPath(userID, albumID, fileName);
     await FSManager.removeFile(path);
   }
@@ -107,15 +108,27 @@ export class StorageManager {
     width: number,
     height: number,
     format: string,
-  ):Promise<ReadStream> {
+  ): Promise<ReadStream> {
     if (!format) format = this.defaultThumbnailFormat;
-    const wantThumbnailPath = this.getThumbnailPath(userID, albumID, photoID, width, height, format);
+    const wantThumbnailPath = this.getThumbnailPath(
+      userID,
+      albumID,
+      photoID,
+      width,
+      height,
+      format,
+    );
     try {
       await access(wantThumbnailPath);
       return createReadStream(wantThumbnailPath);
     } catch (e) {
       const rawPhotoPath = this.getPhotoPath(userID, albumID, fileName);
-      const s = await ImageCompress.compress(rawPhotoPath, width, height, format);
+      const s = await ImageCompress.compress(
+        rawPhotoPath,
+        width,
+        height,
+        format,
+      );
       s.pipe(createWriteStream(wantThumbnailPath));
       return s;
     }

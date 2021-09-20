@@ -6,8 +6,9 @@ import {
   BelongsToMany,
   BelongsTo,
   ForeignKey,
-  Default, CreatedAt
-} from "sequelize-typescript";
+  Default,
+  CreatedAt,
+} from 'sequelize-typescript';
 import { Tag } from '../tag/tag.model';
 import { Album } from '../album/album.model';
 import { PhotoTag } from '../phototag/phototag.model';
